@@ -1,0 +1,18 @@
+version: "3"
+
+services:
+  telegraf:
+    image: telegraf:1.22.4
+    user: root
+    container_name: telegraf
+    volumes:
+      - ./telegraf:/etc/telegraf
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  loki:
+    image: grafana/loki:2.6.1
+    container_name: loki
+    command: -config.file=/loki/local-config.yaml
+    volumes:
+      - ./loki:/loki
+    
