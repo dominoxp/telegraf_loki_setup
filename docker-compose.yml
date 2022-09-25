@@ -15,4 +15,8 @@ services:
     command: -config.file=/loki/local-config.yaml
     volumes:
       - ./loki:/loki
+  
+#  debug:
+#    image: mendhak/http-https-echo
+#    container_name: debug
     

@@ -1,10 +1,24 @@
 # Telegraf - Loki 
 
-This repository represents a error case while connecting telegraf logs from docker_log to loki.
-It is ment as a proof of concept in order to ask for help, currently the loki server response with 400: Bad Request error as seen in telegraf log.
+This repository holds a working example of using telegraf to log from docker logs to a running loki instance.
+In order to process docker logs, all key arguments MUST not contain non Word chars as . DOT, / Slash, etc.
+To replace these keys two approches can be used:
 
-Accessing the loki Container with curl http://loki:3100/ready replies with "ready" state.
+**Replace all tag non word chars with underscore**
+This leads to trailing underscores
 
-Example Startup Logs available in [loki](_loki_logs.txt) [telegraf](_telegraf_logs.txt)
-
-If you know the cause of this please reach out via issue / pull request.
+```
+# https://github.com/influxdata/telegraf/blob/release-1.24/plugins/processors/regex/README.md
+[[processors.regex]]
+  # Rename metric fields
+  [[processors.regex.tag_rename]]
+    ## Regular expression to match on a field name
+    pattern = "((?:\\w+)+).?"
+    ## Matches of the pattern will be replaced with this string.  Use ${1}
+    ## notation to use the text of the first submatch.
+    replacement = "${1}_"
+    ## If the new field name already exists, you can either "overwrite" the
+    ## existing one with the value of the renamed field OR you can "keep"
+    ## both the existing and source field.
+    result_key = "overwrite"
+```
